@@ -1,0 +1,5 @@
+vendor/
+uploads/
+graphify-out/
+composer.phar
+*.pyc
