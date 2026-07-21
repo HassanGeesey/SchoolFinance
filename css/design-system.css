@@ -1134,3 +1134,537 @@ a:hover {
   margin-top: 0.4rem;
   text-align: center;
 }
+
+/* ── Dashboard: Welcome Banner ──────────────────────── */
+.dash-greeting {
+  background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 70%, var(--accent)) 100%);
+  border-radius: var(--radius);
+  padding: 1.75rem 2rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.dash-greeting h2 {
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.dash-greeting .greeting-date {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.dash-greeting .greeting-stats {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.dash-greeting .greeting-stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dash-greeting .greeting-stats i {
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+/* ── Dashboard: KPI Cards ───────────────────────────── */
+.dash-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), background-color var(--transition), border-color var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+.kpi-card.kpi-students::before { background: var(--primary); }
+.kpi-card.kpi-classes::before { background: var(--success); }
+.kpi-card.kpi-teachers::before { background: var(--accent); }
+.kpi-card.kpi-revenue::before { background: var(--warning); }
+
+.kpi-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.15rem;
+}
+
+.kpi-students .kpi-icon { background: rgba(42, 57, 90, 0.1); color: var(--primary); }
+.kpi-classes .kpi-icon { background: rgba(61, 122, 82, 0.1); color: var(--success); }
+.kpi-teachers .kpi-icon { background: rgba(184, 92, 58, 0.1); color: var(--accent); }
+.kpi-revenue .kpi-icon { background: rgba(184, 144, 64, 0.1); color: var(--warning); }
+
+[data-theme="dark"] .kpi-students .kpi-icon { background: rgba(107, 138, 184, 0.15); }
+[data-theme="dark"] .kpi-classes .kpi-icon { background: rgba(95, 168, 118, 0.15); }
+[data-theme="dark"] .kpi-teachers .kpi-icon { background: rgba(212, 132, 94, 0.15); }
+[data-theme="dark"] .kpi-revenue .kpi-icon { background: rgba(212, 176, 96, 0.15); }
+
+.kpi-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.kpi-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.25rem;
+}
+
+.kpi-value {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.1;
+  margin-bottom: 0.3rem;
+}
+
+.kpi-trend {
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.kpi-trend.up { color: var(--success); }
+.kpi-trend.down { color: var(--danger); }
+.kpi-trend.neutral { color: var(--text-muted); }
+
+/* ── Dashboard: Financial Snapshot Strip ─────────────── */
+.dash-finance-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.finance-metric {
+  background: var(--bg-card);
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  transition: background-color var(--transition);
+}
+
+.finance-metric .fm-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.finance-metric .fm-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.finance-metric .fm-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg-body);
+  overflow: hidden;
+}
+
+.finance-metric .fm-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+.fm-revenue .fm-value { color: var(--success); }
+.fm-revenue .fm-bar-fill { background: var(--success); }
+.fm-expenses .fm-value { color: var(--danger); }
+.fm-expenses .fm-bar-fill { background: var(--danger); }
+.fm-salaries .fm-value { color: var(--accent); }
+.fm-salaries .fm-bar-fill { background: var(--accent); }
+.fm-net .fm-value { color: var(--net-profit >= 0 ? 'var(--success)' : 'var(--danger)'); }
+.fm-net .fm-bar-fill { background: var(--net-profit >= 0 ? 'var(--success)' : 'var(--danger)'); }
+
+/* ── Dashboard: Schedule Rows ────────────────────────── */
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.schedule-row:last-child {
+  border-bottom: none;
+}
+
+.schedule-time {
+  background: var(--bg-body);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  min-width: 52px;
+  text-align: center;
+}
+
+.schedule-class {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  min-width: 70px;
+}
+
+.schedule-subject {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.schedule-teacher {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.schedule-teacher i {
+  font-size: 0.7rem;
+}
+
+/* ── Dashboard: Class Capacity ───────────────────────── */
+.capacity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.capacity-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.capacity-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-main);
+  min-width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.capacity-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-body);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.capacity-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.capacity-fill.low { background: var(--success); }
+.capacity-fill.mid { background: var(--warning); }
+.capacity-fill.high { background: var(--danger); }
+
+.capacity-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 42px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ── Dashboard: Pending Fees ─────────────────────────── */
+.pending-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.pending-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.pending-row:last-child {
+  border-bottom: none;
+}
+
+.pending-student {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pending-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-body);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.pending-info .pending-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.pending-info .pending-fee {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.pending-amount {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--danger);
+}
+
+/* ── Dashboard: Enhanced Tables ──────────────────────── */
+.dash-table .activity-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.dash-table .activity-avatar.av-payment {
+  background: rgba(61, 122, 82, 0.1);
+  color: var(--success);
+}
+
+.dash-table .activity-avatar.av-expense {
+  background: rgba(184, 76, 76, 0.1);
+  color: var(--danger);
+}
+
+/* ── Dashboard: Empty State ──────────────────────────── */
+.dash-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  text-align: center;
+}
+
+.dash-empty i {
+  font-size: 2rem;
+  color: var(--text-light);
+  margin-bottom: 0.75rem;
+  opacity: 0.5;
+}
+
+.dash-empty p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.dash-empty a {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* ── Dashboard: Section Headers ──────────────────────── */
+.dash-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.dash-section-header h3 {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dash-section-header h3 i {
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+/* ── Dashboard: Two-Column Layouts ───────────────────── */
+.dash-grid-2 {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dash-grid-equal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dash-card-compact .card-header {
+  padding: 1rem 1.25rem;
+}
+
+.dash-card-compact .card-body {
+  padding: 1.25rem;
+}
+
+.dash-card-compact .table-wrapper {
+  padding: 0;
+}
+
+.dash-card-compact .table th {
+  padding: 0.65rem 1rem;
+}
+
+.dash-card-compact .table td {
+  padding: 0.6rem 1rem;
+}
+
+/* ── Dashboard: Chart Totals ─────────────────────────── */
+.chart-totals {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+
+.chart-totals span {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 500;
+}
+
+.chart-totals .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* ── Dashboard: Responsive ───────────────────────────── */
+@media (max-width: 1100px) {
+  .dash-kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dash-finance-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .dash-greeting {
+    padding: 1.25rem 1.5rem;
+  }
+  .dash-greeting h2 {
+    font-size: 1.15rem;
+  }
+  .dash-grid-2,
+  .dash-grid-equal {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .dash-kpi-row {
+    grid-template-columns: 1fr;
+  }
+  .dash-finance-strip {
+    grid-template-columns: 1fr;
+  }
+  .kpi-card {
+    padding: 1rem;
+  }
+  .finance-metric {
+    padding: 1rem;
+  }
+  .finance-metric .fm-value {
+    font-size: 1.15rem;
+  }
+  .schedule-row {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+}
