@@ -83,7 +83,7 @@ require_once 'header.php';
     <div style="flex:1 1 300px; max-width:100%;">
         <div class="card">
             <div class="card-header">
-                <h3><i class="fas fa-user-plus mr-2" style="color:#059669;"></i>Quick Add Teacher</h3>
+                <h3><i class="fas fa-user-plus mr-2" style="color:var(--primary);"></i>Quick Add Teacher</h3>
             </div>
             <div class="card-body">
                 <form method="POST">
@@ -185,7 +185,7 @@ require_once 'header.php';
                                 <td>
                                     <div style="font-weight:600;color:var(--accent);">$<?= number_format($t['salary'], 2) ?>/mo</div>
                                     <?php if ($t['paid_this_month'] > 0): ?>
-                                        <div class="text-xs" style="color:#059669;"><i class="fas fa-check-circle mr-1"></i>Paid</div>
+                                        <div class="text-xs" style="color:var(--success);"><i class="fas fa-check-circle mr-1"></i>Paid</div>
                                     <?php elseif ($t['last_paid']): ?>
                                         <div class="text-xs text-muted"><i class="far fa-clock mr-1"></i>Last: <?= date('M d', strtotime($t['last_paid'])) ?></div>
                                     <?php else: ?>

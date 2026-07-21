@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'config.php';
 requireLogin();
 $db = getDB();
@@ -6,209 +6,174 @@ $db = getDB();
 $totalStudents   = $db->query("SELECT COUNT(*) FROM students WHERE status='active'")->fetchColumn();
 $totalClasses    = $db->query("SELECT COUNT(*) FROM classes WHERE status='active'")->fetchColumn();
 $totalTeachers   = $db->query("SELECT COUNT(*) FROM teachers WHERE status='active'")->fetchColumn();
+$totalSubjects   = $db->query("SELECT COUNT(*) FROM subjects WHERE status='active'")->fetchColumn();
 $monthlyRevenue  = $db->query("SELECT COALESCE(SUM(amount),0) FROM fee_payments WHERE MONTH(payment_date)=MONTH(CURDATE())")->fetchColumn();
 $monthlyExpenses = $db->query("SELECT COALESCE(SUM(amount),0) FROM expenses WHERE MONTH(expense_date)=MONTH(CURDATE())")->fetchColumn();
 $monthlySalaries = $db->query("SELECT COALESCE(SUM(amount),0) FROM salary_payments WHERE MONTH(payment_date)=MONTH(CURDATE())")->fetchColumn();
-$netProfit = $monthlyRevenue - $monthlyExpenses - $monthlySalaries;
+$netProfit       = $monthlyRevenue - $monthlyExpenses - $monthlySalaries;
 
-$totalSubjects = $db->query("SELECT COUNT(*) FROM subjects WHERE status='active'")->fetchColumn();
-
-$timeSlots = $db->query("SELECT * FROM time_slots ORDER BY start_time")->fetchAll();
-
-$dayAbbrs = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-$dayFull = ['Mon'=>'Monday','Tue'=>'Tuesday','Wed'=>'Wednesday','Thu'=>'Thursday','Fri'=>'Friday','Sat'=>'Saturday','Sun'=>'Sunday'];
-
-// Build schedule: [day][time_slot_id] = [{subject_name, teacher_name, class_name, color}]
-$raw = $db->query("
-    SELECT cs.day_of_week, cs.time_slot_id,
-           s.name as subject_name, t.name as teacher_name, c.name as class_name, c.id as class_id, cs.subject_id
-    FROM class_subjects cs
-    JOIN subjects s ON cs.subject_id=s.id
-    JOIN teachers t ON cs.teacher_id=t.id
-    JOIN classes c ON cs.class_id=c.id
-    WHERE cs.status='active' AND c.status='active'
-    ORDER BY cs.time_slot_id, FIELD(cs.day_of_week,'Mon','Tue','Wed','Thu','Fri','Sat','Sun')
-")->fetchAll();
-
-$subject_colors = ['#3b82f6','#059669','#7c3aed','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1'];
-$all_subjects = $db->query("SELECT id FROM subjects ORDER BY name")->fetchAll();
-$color_map = [];
-foreach ($all_subjects as $i=>$s) {
-    $color_map[$s['id']] = $subject_colors[$i % count($subject_colors)];
+$chartData = [];
+for ($i = 5; $i >= 0; $i--) {
+    $monthStart = date('Y-m-01', strtotime("-{$i} months"));
+    $monthEnd   = date('Y-m-t', strtotime("-{$i} months"));
+    $monthLabel = date('M', strtotime("-{$i} months"));
+    $rev = $db->query("SELECT COALESCE(SUM(amount),0) FROM fee_payments WHERE payment_date BETWEEN '{$monthStart}' AND '{$monthEnd}'")->fetchColumn();
+    $exp = $db->query("SELECT COALESCE(SUM(amount),0) FROM expenses WHERE expense_date BETWEEN '{$monthStart}' AND '{$monthEnd}'")->fetchColumn();
+    $sal = $db->query("SELECT COALESCE(SUM(amount),0) FROM salary_payments WHERE payment_date BETWEEN '{$monthStart}' AND '{$monthEnd}'")->fetchColumn();
+    $chartData[] = ['label' => $monthLabel, 'revenue' => (float)$rev, 'expense' => (float)$exp + (float)$sal];
 }
+$maxVal = 1;
+foreach ($chartData as $d) { $maxVal = max($maxVal, $d['revenue'], $d['expense']); }
+$maxVal = max(1000, ceil($maxVal / 1000) * 1000);
 
-$schedule = [];
-foreach ($raw as $row) {
-    $row['color'] = $color_map[$row['subject_id']] ?? '#6b7280';
-    $schedule[$row['day_of_week']][$row['time_slot_id']][] = $row;
-}
+$recentPayments = $db->query("
+    SELECT fp.amount, fp.payment_date, fp.payment_method, s.name AS student_name, fs.name AS fee_name
+    FROM fee_payments fp JOIN students s ON fp.student_id = s.id JOIN fee_structures fs ON fp.fee_structure_id = fs.id
+    ORDER BY fp.payment_date DESC LIMIT 5
+")->fetchAll(PDO::FETCH_ASSOC);
+
+$recentExpenses = $db->query("
+    SELECT e.amount, e.expense_date, e.description, ec.name AS category_name
+    FROM expenses e JOIN expense_categories ec ON e.expense_category_id = ec.id
+    ORDER BY e.expense_date DESC LIMIT 5
+")->fetchAll(PDO::FETCH_ASSOC);
 
 require_once 'header.php';
 ?>
-<style>
-.stat-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 16px; border: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); }
-.stat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
-.quick-action-btn { transition: all 0.2s ease; border: 1px solid var(--border); background: var(--bg-surface); border-radius: 12px; text-decoration: none; color: var(--text-main); font-weight: 500; }
-.quick-action-btn:hover { border-color: transparent; box-shadow: 0 8px 20px -6px rgba(0,0,0,0.15); background: var(--bg-surface); transform: translateY(-2px); color: var(--primary); }
-.schedule-cell { border-radius: 8px; padding: 5px 7px; margin-bottom: 3px; color: white; font-size: 0.75rem; line-height: 1.3; }
-.schedule-cell .subj-name { font-weight: 600; }
-.schedule-cell .meta { opacity: 0.85; font-size: 0.65rem; }
-</style>
 
-<div class="d-flex flex-wrap mb-4" style="gap:1.5rem;">
-    <div class="card stat-card" style="flex:1;min-width:170px;">
-        <div class="card-body d-flex align-center justify-between">
-            <div>
-                <p class="text-muted font-medium text-sm mb-1">Classes</p>
-                <p class="font-bold" style="font-size:2.25rem;margin:0;line-height:1;"><?= $totalClasses ?></p>
+<div class="d-flex flex-wrap" style="gap:1.5rem;">
+    <div style="flex:2 1 500px;">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-bolt mr-2" style="color:var(--primary);"></i>Quick Actions</h3>
             </div>
-            <div style="width:56px;height:56px;background:linear-gradient(135deg, rgba(42,57,90,0.1), rgba(42,57,90,0.2));border-radius:14px;display:flex;align-items:center;justify-content:center;">
-                <i class="fas fa-chalkboard-teacher" style="color:var(--primary);font-size:1.5rem;"></i>
-            </div>
-        </div>
-    </div>
-    <div class="card stat-card" style="flex:1;min-width:170px;">
-        <div class="card-body d-flex align-center justify-between">
-            <div>
-                <p class="text-muted font-medium text-sm mb-1">Students</p>
-                <p class="font-bold" style="font-size:2.25rem;margin:0;line-height:1;"><?= $totalStudents ?></p>
-            </div>
-            <div style="width:56px;height:56px;background:linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.2));border-radius:14px;display:flex;align-items:center;justify-content:center;">
-                <i class="fas fa-users" style="color:#059669;font-size:1.5rem;"></i>
+            <div class="card-body">
+                <div class="d-flex flex-wrap" style="gap:0.75rem;">
+                    <a href="class_create.php" class="btn btn-primary"><i class="fas fa-chalkboard mr-1"></i> New Class</a>
+                    <a href="class_schedule.php" class="btn btn-outline"><i class="fas fa-calendar-alt mr-1"></i> Schedule</a>
+                    <a href="fee_payments.php" class="btn btn-outline"><i class="fas fa-wallet mr-1"></i> Record Payment</a>
+                    <a href="expenses.php" class="btn btn-outline"><i class="fas fa-receipt mr-1"></i> Record Expense</a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="card stat-card" style="flex:1;min-width:170px;">
-        <div class="card-body d-flex align-center justify-between">
-            <div>
-                <p class="text-muted font-medium text-sm mb-1">Teachers</p>
-                <p class="font-bold" style="font-size:2.25rem;margin:0;line-height:1;"><?= $totalTeachers ?></p>
-            </div>
-            <div style="width:56px;height:56px;background:linear-gradient(135deg, rgba(139,92,246,0.1), rgba(139,92,246,0.2));border-radius:14px;display:flex;align-items:center;justify-content:center;">
-                <i class="fas fa-user-tie" style="color:#7c3aed;font-size:1.5rem;"></i>
-            </div>
-        </div>
-    </div>
-    <div class="card stat-card" style="flex:1;min-width:170px;">
-        <div class="card-body d-flex align-center justify-between">
-            <div>
-                <p class="text-muted font-medium text-sm mb-1">Subjects</p>
-                <p class="font-bold" style="font-size:2.25rem;margin:0;line-height:1;"><?= $totalSubjects ?></p>
-            </div>
-            <div style="width:56px;height:56px;background:linear-gradient(135deg, rgba(6,182,212,0.1), rgba(6,182,212,0.2));border-radius:14px;display:flex;align-items:center;justify-content:center;">
-                <i class="fas fa-book" style="color:#06b6d4;font-size:1.5rem;"></i>
-            </div>
-        </div>
-    </div>
-    <div class="card stat-card" style="flex:1;min-width:170px;">
-        <div class="card-body d-flex align-center justify-between">
-            <div>
-                <p class="text-muted font-medium text-sm mb-1">Revenue</p>
-                <p class="font-bold" style="font-size:2.25rem;margin:0;line-height:1;color:var(--accent);">$<?= number_format($monthlyRevenue,0) ?></p>
-            </div>
-            <div style="width:56px;height:56px;background:linear-gradient(135deg, rgba(252,68,102,0.1), rgba(252,68,102,0.2));border-radius:14px;display:flex;align-items:center;justify-content:center;">
-                <i class="fas fa-dollar-sign" style="color:var(--accent);font-size:1.5rem;"></i>
-            </div>
-        </div>
-    </div>
-    <div class="card stat-card" style="flex:1;min-width:170px;">
-        <div class="card-body d-flex align-center justify-between">
-            <div>
-                <p class="text-muted font-medium text-sm mb-1">Expenses</p>
-                <p class="font-bold" style="font-size:2.25rem;margin:0;line-height:1;color:#ef4444;">$<?= number_format($monthlyExpenses + $monthlySalaries,0) ?></p>
-            </div>
-            <div style="width:56px;height:56px;background:linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.2));border-radius:14px;display:flex;align-items:center;justify-content:center;">
-                <i class="fas fa-receipt" style="color:#ef4444;font-size:1.5rem;"></i>
-            </div>
-        </div>
-    </div>
-    <div class="card stat-card" style="flex:1;min-width:170px;">
-        <div class="card-body d-flex align-center justify-between">
-            <div>
-                <p class="text-muted font-medium text-sm mb-1">Net Profit</p>
-                <p class="font-bold" style="font-size:2.25rem;margin:0;line-height:1;color:<?= $netProfit >= 0 ? '#059669' : '#ef4444' ?>;"><?= $netProfit >= 0 ? '$' : '-$' ?><?= number_format(abs($netProfit),0) ?></p>
-            </div>
-            <div style="width:56px;height:56px;background:linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.2));border-radius:14px;display:flex;align-items:center;justify-content:center;">
-                <i class="fas fa-chart-line" style="color:#059669;font-size:1.5rem;"></i>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="d-flex flex-wrap mb-4" style="gap:1rem;">
-    <a href="class_create.php" class="quick-action-btn d-flex align-center" style="flex:1;min-width:160px;padding:1rem;">
-        <span style="width:44px;height:44px;background:var(--primary);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;margin-right:1rem;box-shadow:0 4px 10px rgba(42,57,90,0.2);">
-            <i class="fas fa-chalkboard fa-lg" style="color:#fff;"></i>
-        </span>
-        <span style="font-size:1.05rem;">New Class</span>
-    </a>
-    <a href="class_schedule.php" class="quick-action-btn d-flex align-center" style="flex:1;min-width:160px;padding:1rem;">
-        <span style="width:44px;height:44px;background:#059669;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;margin-right:1rem;box-shadow:0 4px 10px rgba(5,150,105,0.2);">
-            <i class="fas fa-calendar-alt fa-lg" style="color:#fff;"></i>
-        </span>
-        <span style="font-size:1.05rem;">Schedule</span>
-    </a>
-    <a href="fee_payments.php" class="quick-action-btn d-flex align-center" style="flex:1;min-width:160px;padding:1rem;">
-        <span style="width:44px;height:44px;background:var(--accent);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;margin-right:1rem;box-shadow:0 4px 10px rgba(252,68,102,0.2);">
-            <i class="fas fa-wallet fa-lg" style="color:#fff;"></i>
-        </span>
-        <span style="font-size:1.05rem;">Record Payment</span>
-    </a>
-    <a href="expenses.php" class="quick-action-btn d-flex align-center" style="flex:1;min-width:160px;padding:1rem;">
-        <span style="width:44px;height:44px;background:#ef4444;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;margin-right:1rem;box-shadow:0 4px 10px rgba(239,68,68,0.2);">
-            <i class="fas fa-receipt fa-lg" style="color:#fff;"></i>
-        </span>
-        <span style="font-size:1.05rem;">Record Expense</span>
-    </a>
-</div>
-
-<!-- Schedule Grid: Days x Time Slots -->
-<div class="card">
-    <div class="card-header">
-        <h2><i class="fas fa-calendar-alt mr-2" style="color:var(--primary);"></i>Weekly Schedule</h2>
-        <a href="class_schedule.php" class="btn btn-outline-primary btn-sm">Edit Schedule</a>
-    </div>
-    <div class="table-wrapper" style="overflow-x:auto;">
-        <table class="table" style="min-width:1000px;">
-            <thead>
-                <tr>
-                    <th style="width:120px;">Time</th>
-                    <?php foreach ($dayAbbrs as $da): ?>
-                        <th style="text-align:center;min-width:130px;"><?= $dayFull[$da] ?></th>
-                    <?php endforeach; ?>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($timeSlots as $ts): ?>
-                    <tr>
-                        <td>
-                            <span class="font-semibold" style="font-size:0.8rem;white-space:nowrap;">
-                                <?= date('g:i A', strtotime($ts['start_time'])) ?><br>
-                                <span class="text-muted" style="font-size:0.7rem;"><?= date('g:i A', strtotime($ts['end_time'])) ?></span>
-                            </span>
-                        </td>
-                        <?php foreach ($dayAbbrs as $da): ?>
-                            <td style="vertical-align:top;padding:3px;">
-                                <?php
-                                $entries = $schedule[$da][$ts['id']] ?? [];
-                                if (empty($entries)):
-                                ?>
-                                    <span style="color:var(--text-muted);opacity:0.3;font-size:0.8rem;">&mdash;</span>
-                                <?php else: ?>
-                                    <?php foreach ($entries as $e): ?>
-                                        <a href="class_view.php?id=<?= $e['class_id'] ?>" class="schedule-cell" style="display:block;background:<?= $e['color'] ?>;text-decoration:none;margin-bottom:3px;">
-                                            <div class="subj-name"><?= htmlspecialchars($e['subject_name']) ?></div>
-                                            <div class="meta"><?= htmlspecialchars($e['class_name']) ?></div>
-                                            <div class="meta"><?= htmlspecialchars($e['teacher_name']) ?></div>
-                                        </a>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </td>
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-bar mr-2" style="color:var(--primary);"></i>Revenue vs Expenses</h3>
+                <div class="d-flex gap-3" style="font-size:0.8rem;">
+                    <span class="d-flex align-center gap-2"><span style="width:10px;height:10px;border-radius:2px;background:var(--success);display:inline-block;"></span> Revenue</span>
+                    <span class="d-flex align-center gap-2"><span style="width:10px;height:10px;border-radius:2px;background:var(--danger);display:inline-block;"></span> Expenses</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <?php if (array_sum(array_column($chartData, 'revenue')) == 0 && array_sum(array_column($chartData, 'expense')) == 0): ?>
+                    <p class="text-center text-muted" style="padding:2rem 0;">No financial data yet.</p>
+                <?php else: ?>
+                    <div class="chart-bars">
+                        <?php foreach ($chartData as $d): ?>
+                            <div class="chart-col">
+                                <span class="chart-tip"><span style="color:var(--success);">$<?= number_format($d['revenue'], 0) ?></span> / <span style="color:var(--danger);">$<?= number_format($d['expense'], 0) ?></span></span>
+                                <div class="chart-col-bars">
+                                    <span class="bar-r" style="height:<?= ($d['revenue'] / $maxVal) * 100 ?>%;"></span>
+                                    <span class="bar-e" style="height:<?= ($d['expense'] / $maxVal) * 100 ?>%;"></span>
+                                </div>
+                                <span class="chart-label"><?= $d['label'] ?></span>
+                            </div>
                         <?php endforeach; ?>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3><i class="fas fa-money-bill-wave mr-2" style="color:var(--primary);"></i>Recent Payments</h3>
+                <a href="fee_payments.php" class="btn btn-sm btn-outline">View All</a>
+            </div>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead><tr><th>Student</th><th>Fee</th><th>Amount</th><th>Date</th><th>Method</th></tr></thead>
+                    <tbody>
+                        <?php if (empty($recentPayments)): ?>
+                            <tr><td colspan="5" class="text-center text-muted" style="padding:1.5rem;">No payments recorded yet.</td></tr>
+                        <?php else: foreach ($recentPayments as $p): ?>
+                            <tr>
+                                <td class="font-medium"><?= htmlspecialchars($p['student_name']) ?></td>
+                                <td class="text-muted"><?= htmlspecialchars($p['fee_name']) ?></td>
+                                <td style="color:var(--success);font-weight:600;">$<?= number_format($p['amount'], 2) ?></td>
+                                <td class="text-muted"><?= date('M d', strtotime($p['payment_date'])) ?></td>
+                                <td><span class="badge badge-secondary"><?= ucfirst(str_replace('_', ' ', $p['payment_method'])) ?></span></td>
+                            </tr>
+                        <?php endforeach; endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div style="flex:1 1 300px;">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-info-circle mr-2" style="color:var(--primary);"></i>Overview</h3>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column" style="gap:0.75rem;">
+                    <div class="d-flex align-center justify-between">
+                        <span class="d-flex align-center gap-2 text-muted"><i class="fas fa-chalkboard-teacher" style="width:16px;text-align:center;"></i> Classes</span>
+                        <span class="font-semibold"><?= $totalClasses ?></span>
+                    </div>
+                    <div class="d-flex align-center justify-between">
+                        <span class="d-flex align-center gap-2 text-muted"><i class="fas fa-users" style="width:16px;text-align:center;"></i> Students</span>
+                        <span class="font-semibold"><?= $totalStudents ?></span>
+                    </div>
+                    <div class="d-flex align-center justify-between">
+                        <span class="d-flex align-center gap-2 text-muted"><i class="fas fa-user-tie" style="width:16px;text-align:center;"></i> Teachers</span>
+                        <span class="font-semibold"><?= $totalTeachers ?></span>
+                    </div>
+                    <div class="d-flex align-center justify-between">
+                        <span class="d-flex align-center gap-2 text-muted"><i class="fas fa-book" style="width:16px;text-align:center;"></i> Subjects</span>
+                        <span class="font-semibold"><?= $totalSubjects ?></span>
+                    </div>
+                    <div style="height:1px;background:var(--border);"></div>
+                    <div class="d-flex align-center justify-between">
+                        <span class="d-flex align-center gap-2 text-muted"><i class="fas fa-dollar-sign" style="width:16px;text-align:center;color:var(--success);"></i> Revenue</span>
+                        <span class="font-semibold" style="color:var(--success);">$<?= number_format($monthlyRevenue, 0) ?></span>
+                    </div>
+                    <div class="d-flex align-center justify-between">
+                        <span class="d-flex align-center gap-2 text-muted"><i class="fas fa-receipt" style="width:16px;text-align:center;color:var(--danger);"></i> Expenses</span>
+                        <span class="font-semibold" style="color:var(--danger);">$<?= number_format($monthlyExpenses + $monthlySalaries, 0) ?></span>
+                    </div>
+                    <div class="d-flex align-center justify-between">
+                        <span class="d-flex align-center gap-2 text-muted"><i class="fas fa-chart-line" style="width:16px;text-align:center;color:<?= $netProfit >= 0 ? 'var(--success)' : 'var(--danger)' ?>;"></i> Net Profit</span>
+                        <span class="font-semibold" style="color:<?= $netProfit >= 0 ? 'var(--success)' : 'var(--danger)' ?>;"><?= $netProfit >= 0 ? '$' : '-$' ?><?= number_format(abs($netProfit), 0) ?></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3><i class="fas fa-receipt mr-2" style="color:var(--primary);"></i>Recent Expenses</h3>
+                <a href="expenses.php" class="btn btn-sm btn-outline">View All</a>
+            </div>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead><tr><th>Description</th><th>Category</th><th>Amount</th><th>Date</th></tr></thead>
+                    <tbody>
+                        <?php if (empty($recentExpenses)): ?>
+                            <tr><td colspan="4" class="text-center text-muted" style="padding:1.5rem;">No expenses recorded yet.</td></tr>
+                        <?php else: foreach ($recentExpenses as $e): ?>
+                            <tr>
+                                <td class="font-medium"><?= htmlspecialchars($e['description']) ?></td>
+                                <td class="text-muted"><?= htmlspecialchars($e['category_name']) ?></td>
+                                <td style="color:var(--danger);font-weight:600;">$<?= number_format($e['amount'], 2) ?></td>
+                                <td class="text-muted"><?= date('M d', strtotime($e['expense_date'])) ?></td>
+                            </tr>
+                        <?php endforeach; endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 

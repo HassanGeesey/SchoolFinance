@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'config.php';
 requireLogin();
 $db = getDB();
@@ -72,7 +72,7 @@ if ($selected_class) {
 }
 
 // Color map for subjects
-$subject_colors = ['#3b82f6','#059669','#7c3aed','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1'];
+$subject_colors = ['#2a395a','#b85c3a','#3d7a52','#b89040','#b84c4c','#5a7a8a','#8a6a7a','#6a8a5a','#9a7040','#5a6a8a'];
 $subject_ids = array_column($subjects, 'id');
 $color_map = [];
 foreach ($subject_ids as $i => $sid) {
@@ -103,10 +103,12 @@ require_once 'header.php';
     </form>
 </div>
 
+
+
 <!-- Add Entry Form -->
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="fas fa-plus-circle mr-2" style="color:#059669;"></i>Add Schedule Entry</h3>
+        <h3><i class="fas fa-plus-circle mr-2" style="color:var(--primary);"></i>Add Schedule Entry</h3>
     </div>
     <div class="card-body">
         <form method="POST">
@@ -147,10 +149,7 @@ require_once 'header.php';
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="form-group" style="min-width:100px;">
-                    <label class="form-label">Freq.</label>
-                    <input type="number" name="weekly_frequency" class="form-control" value="1" min="1" max="7" title="Weekly frequency (informational)">
-                </div>
+
                 <div class="form-group">
                     <button type="submit" class="btn btn-success"><i class="fas fa-plus mr-2"></i>Add</button>
                 </div>
@@ -192,7 +191,7 @@ require_once 'header.php';
                                 ?>
                                     <div style="background:<?= $color ?>;color:white;border-radius:8px;padding:6px 8px;margin-bottom:4px;position:relative;font-size:0.78rem;line-height:1.3;">
                                         <div class="font-semibold"><?= htmlspecialchars($entry['subject_name']) ?></div>
-                                        <div style="opacity:0.85;font-size:0.7rem;"><?= htmlspecialchars($entry['teacher_name']) ?></div>
+                                        <div style="opacity:0.75;font-size:0.65rem;"><?= htmlspecialchars($entry['teacher_name']) ?></div>
                                         <form method="POST" style="position:absolute;top:2px;right:2px;" onsubmit="return confirm('Remove this entry?')">
                                             <input type="hidden" name="entry_id" value="<?= $entry['id'] ?>">
                                             <input type="hidden" name="delete_entry" value="1">
@@ -210,18 +209,6 @@ require_once 'header.php';
     </div>
 </div>
 
-<!-- Subject Legend -->
-<div class="card mt-4">
-    <div class="card-header"><h3><i class="fas fa-palette mr-2"></i>Subject Legend</h3></div>
-    <div class="card-body d-flex flex-wrap" style="gap:0.75rem;">
-        <?php foreach ($subjects as $i=>$s): ?>
-            <?php $color = $subject_colors[$i % count($subject_colors)]; ?>
-            <div style="display:flex;align-items:center;gap:0.4rem;">
-                <div style="width:14px;height:14px;border-radius:4px;background:<?= $color ?>;"></div>
-                <span style="font-size:0.8rem;font-weight:500;"><?= htmlspecialchars($s['name']) ?></span>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</div>
+
 
 <?php require_once 'footer.php'; ?>

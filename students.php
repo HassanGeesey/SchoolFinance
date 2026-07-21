@@ -197,7 +197,7 @@ require_once 'header.php';
     <div style="flex:1 1 300px; max-width:100%;">
         <div class="card">
             <div class="card-header">
-                <h3><i class="fas fa-user-plus mr-2" style="color:#059669;"></i>Enroll Student</h3>
+                <h3><i class="fas fa-user-plus mr-2" style="color:var(--primary);"></i>Enroll Student</h3>
             </div>
             <div class="card-body">
                 <form method="POST">
@@ -271,7 +271,7 @@ require_once 'header.php';
                             <li>Fill in Sheet 2 (Students) — use the <strong>Class dropdown</strong> to select</li>
                             <li>Upload the completed file</li>
                         </ol>
-                        <div class="mt-2" style="padding:0.4rem 0.5rem;background:rgba(16,185,129,0.08);border-radius:4px;color:#059669;">
+                        <div class="mt-2" style="padding:0.4rem 0.5rem;background:rgba(42,57,90,0.08);border-radius:4px;color:var(--primary);">
                             <i class="fas fa-info-circle mr-1"></i>Student IDs are auto-generated (e.g. <?= date('y') ?>001). Default password: <code>password123</code>
                         </div>
                     </div>
@@ -348,7 +348,7 @@ require_once 'header.php';
                                                         <?php endif; ?>
                                                     <?php endforeach; ?>
                                                 </select>
-                                                <button type="submit" name="transfer" class="btn btn-sm" style="background:#f59e0b;color:#fff;padding:0.2rem 0.5rem;font-size:0.7rem;">Go</button>
+                                                <button type="submit" name="transfer" class="btn btn-sm" style="background:var(--primary);color:#fff;padding:0.2rem 0.5rem;font-size:0.7rem;">Go</button>
                                             </form>
                                         <?php endif; ?>
                                         <?php if ($student['status']==='active'): ?>
@@ -371,7 +371,7 @@ require_once 'header.php';
                             </tr>
                             <tr class="student-detail" style="display:none;">
                                 <td colspan="5" style="padding:0;border:none;">
-                                    <div style="background:var(--bg-body,#f9fafb);border-left:3px solid var(--primary,#10b981);margin:0 1rem 0.5rem 2.2rem;padding:0.6rem 1rem;border-radius:0 6px 6px 0;display:flex;flex-wrap:wrap;gap:1rem 2rem;font-size:0.8rem;">
+                                    <div style="background:var(--bg-body);border-left:3px solid var(--primary);margin:0 1rem 0.5rem 2.2rem;padding:0.6rem 1rem;border-radius:0 6px 6px 0;display:flex;flex-wrap:wrap;gap:1rem 2rem;font-size:0.8rem;">
                                         <div>
                                             <span class="text-muted" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;">Gender</span><br>
                                             <?php if ($student['gender']): ?>

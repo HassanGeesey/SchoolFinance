@@ -68,7 +68,7 @@ if (!$payment) {
         .receipt-footer { display: flex; justify-content: space-between; align-items: flex-end; }
         .signature p { color: var(--text-muted); font-size: 0.875rem; margin: 0 0 0.25rem 0; }
         
-        .verified-stamp { width: 90px; height: 90px; border-radius: 50%; background-color: rgba(16, 185, 129, 0.1); border: 2px dashed #059669; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #059669; transform: rotate(-15deg); }
+        .verified-stamp { width: 90px; height: 90px; border-radius: 50%; background-color: rgba(61, 122, 82, 0.1); border: 2px dashed var(--success); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--success); transform: rotate(-15deg); }
         .verified-stamp i { font-size: 2rem; margin-bottom: 0.25rem; }
         .verified-stamp span { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
         

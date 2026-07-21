@@ -66,8 +66,8 @@ require_once 'header.php';
     </div>
     <div class="card" style="flex:1;min-width:150px;">
         <div class="card-body text-center">
-            <div style="width:48px;height:48px;background:rgba(139,92,246,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
-                <i class="fas fa-user-tie" style="color:#7c3aed;font-size:1.25rem;"></i>
+            <div style="width:48px;height:48px;background:rgba(42,57,90,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
+                <i class="fas fa-user-tie" style="color:var(--primary);font-size:1.25rem;"></i>
             </div>
             <p class="text-muted text-sm mb-1">Teachers</p>
             <p class="font-semibold" style="font-size:1.75rem;"><?= $totalTeachers ?></p>

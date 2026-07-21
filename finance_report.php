@@ -170,29 +170,29 @@ require_once 'header.php';
 <div class="d-flex flex-wrap mb-4" style="gap:1.5rem;">
     <div class="card" style="flex:1;min-width:220px;">
         <div class="card-body text-center">
-            <div style="width:48px;height:48px;background:rgba(16,185,129,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
-                <i class="fas fa-arrow-down" style="color:#059669;font-size:1.25rem;"></i>
+            <div style="width:48px;height:48px;background:rgba(61,122,82,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
+                <i class="fas fa-arrow-down" style="color:var(--success);font-size:1.25rem;"></i>
             </div>
             <p class="text-muted text-sm mb-1">Period Income</p>
-            <p class="font-semibold" style="font-size:1.75rem;color:#059669;">$<?= number_format($monthlyIncome, 2) ?></p>
+            <p class="font-semibold" style="font-size:1.75rem;color:var(--success);">$<?= number_format($monthlyIncome, 2) ?></p>
         </div>
     </div>
     <div class="card" style="flex:1;min-width:220px;">
         <div class="card-body text-center">
-            <div style="width:48px;height:48px;background:rgba(239,68,68,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
-                <i class="fas fa-arrow-up" style="color:#ef4444;font-size:1.25rem;"></i>
+            <div style="width:48px;height:48px;background:rgba(184,76,76,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
+                <i class="fas fa-arrow-up" style="color:var(--danger);font-size:1.25rem;"></i>
             </div>
             <p class="text-muted text-sm mb-1">Period Expenses</p>
-            <p class="font-semibold" style="font-size:1.75rem;color:#ef4444;">$<?= number_format($monthlyExpenses, 2) ?></p>
+            <p class="font-semibold" style="font-size:1.75rem;color:var(--danger);">$<?= number_format($monthlyExpenses, 2) ?></p>
         </div>
     </div>
     <div class="card" style="flex:1;min-width:220px;">
         <div class="card-body text-center">
-            <div style="width:48px;height:48px;background:rgba(245,158,11,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
-                <i class="fas fa-money-check-alt" style="color:#d97706;font-size:1.25rem;"></i>
+            <div style="width:48px;height:48px;background:rgba(184,144,64,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
+                <i class="fas fa-money-check-alt" style="color:var(--warning);font-size:1.25rem;"></i>
             </div>
             <p class="text-muted text-sm mb-1">Period Salaries</p>
-            <p class="font-semibold" style="font-size:1.75rem;color:#d97706;">$<?= number_format($monthlySalaries, 2) ?></p>
+            <p class="font-semibold" style="font-size:1.75rem;color:var(--warning);">$<?= number_format($monthlySalaries, 2) ?></p>
         </div>
     </div>
     <div class="card" style="flex:1;min-width:220px;">
@@ -201,7 +201,7 @@ require_once 'header.php';
                 <i class="fas fa-chart-line" style="color:var(--primary);font-size:1.25rem;"></i>
             </div>
             <p class="text-muted text-sm mb-1">Net Balance (Period)</p>
-            <p class="font-semibold" style="font-size:1.75rem;color:<?= $monthlyNet >= 0 ? '#059669' : '#ef4444' ?>;"><?= $monthlyNet >= 0 ? '$' : '-$' ?><?= number_format(abs($monthlyNet), 2) ?></p>
+            <p class="font-semibold" style="font-size:1.75rem;color:<?= $monthlyNet >= 0 ? 'var(--success)' : 'var(--danger)' ?>;"><?= $monthlyNet >= 0 ? '$' : '-$' ?><?= number_format(abs($monthlyNet), 2) ?></p>
         </div>
     </div>
 </div>
@@ -210,19 +210,19 @@ require_once 'header.php';
     <div class="card" style="flex:1;min-width:120px;">
         <div class="card-body text-center" style="padding:1rem;">
             <p class="text-muted text-xs mb-1">All-Time Income</p>
-            <p class="font-semibold" style="font-size:1.1rem;color:#059669;">$<?= number_format($totalIncome, 2) ?></p>
+            <p class="font-semibold" style="font-size:1.1rem;color:var(--success);">$<?= number_format($totalIncome, 2) ?></p>
         </div>
     </div>
     <div class="card" style="flex:1;min-width:120px;">
         <div class="card-body text-center" style="padding:1rem;">
             <p class="text-muted text-xs mb-1">All-Time Expenses</p>
-            <p class="font-semibold" style="font-size:1.1rem;color:#ef4444;">$<?= number_format($totalExpensesAll + $totalSalariesAll, 2) ?></p>
+            <p class="font-semibold" style="font-size:1.1rem;color:var(--danger);">$<?= number_format($totalExpensesAll + $totalSalariesAll, 2) ?></p>
         </div>
     </div>
     <div class="card" style="flex:1;min-width:120px;">
         <div class="card-body text-center" style="padding:1rem;">
             <p class="text-muted text-xs mb-1">All-Time Net</p>
-            <p class="font-semibold" style="font-size:1.1rem;color:<?= $totalNet >= 0 ? '#059669' : '#ef4444' ?>;"><?= $totalNet >= 0 ? '$' : '-$' ?><?= number_format(abs($totalNet), 2) ?></p>
+            <p class="font-semibold" style="font-size:1.1rem;color:<?= $totalNet >= 0 ? 'var(--success)' : 'var(--danger)' ?>;"><?= $totalNet >= 0 ? '$' : '-$' ?><?= number_format(abs($totalNet), 2) ?></p>
         </div>
     </div>
     <div class="card" style="flex:1;min-width:120px;">
@@ -270,6 +270,7 @@ require_once 'header.php';
             </div>
             <button type="submit" class="btn btn-sm btn-primary" style="padding:0.4rem 1rem;"><i class="fas fa-filter mr-1"></i>Apply</button>
             <a href="?preset=this_month" class="btn btn-sm btn-outline" style="padding:0.4rem 1rem;">Reset</a>
+            <a href="finance_report_pdf.php?start_date=<?= htmlspecialchars($monthStart) ?>&end_date=<?= htmlspecialchars($monthEnd) ?>" class="btn btn-sm btn-outline" style="padding:0.4rem 1rem;" target="_blank"><i class="fas fa-file-pdf mr-1"></i>Export PDF</a>
             <span class="ml-auto text-muted text-xs" style="white-space:nowrap;"><i class="fas fa-calendar mr-1"></i><?= htmlspecialchars($periodLabel) ?></span>
         </form>
     </div>
@@ -374,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <tr>
                                 <td class="font-medium" style="text-transform:capitalize;"><?= htmlspecialchars(str_replace('_',' ',$row['payment_method'])) ?></td>
                                 <td><?= $row['cnt'] ?></td>
-                                <td class="text-right" style="color:#059669;font-weight:600;">$<?= number_format($row['total'], 2) ?></td>
+                                <td class="text-right" style="color:var(--success);font-weight:600;">$<?= number_format($row['total'], 2) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -395,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <td class="font-medium"><?= htmlspecialchars($fb['fee_name']) ?></td>
                                 <td class="text-muted">$<?= number_format($fb['fee_amount'], 2) ?></td>
                                 <td><?= $fb['paid_count'] ?></td>
-                                <td class="text-right" style="color:#059669;font-weight:600;">$<?= number_format($fb['collected'], 2) ?></td>
+                                <td class="text-right" style="color:var(--success);font-weight:600;">$<?= number_format($fb['collected'], 2) ?></td>
                             </tr>
                         <?php endforeach; ?>
                         <?php if (empty($feeBreakdown)): ?>
@@ -425,11 +426,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             <tr>
                                 <td class="font-medium"><?= date('M Y', strtotime($t['m'] . '-01')) ?></td>
                                 <td class="text-right">
-                                    <span style="color:#059669;font-weight:600;">+$<?= number_format($t['income'], 2) ?></span>
+                                    <span style="color:var(--success);font-weight:600;">+$<?= number_format($t['income'], 2) ?></span>
                                     <span class="text-muted" style="margin:0 0.25rem;">/</span>
-                                    <span style="color:#ef4444;">-$<?= number_format($tExpenses + $tSalaries, 2) ?></span>
+                                    <span style="color:var(--danger);">-$<?= number_format($tExpenses + $tSalaries, 2) ?></span>
                                     <span class="text-muted" style="margin-left:0.5rem;">=</span>
-                                    <span style="font-weight:600;color:<?= $tNet >= 0 ? '#059669' : '#ef4444' ?>;"><?= $tNet >= 0 ? '+' : '' ?>$<?= number_format($tNet, 2) ?></span>
+                                    <span style="font-weight:600;color:<?= $tNet >= 0 ? 'var(--success)' : 'var(--danger)' ?>;"><?= $tNet >= 0 ? '+' : '' ?>$<?= number_format($tNet, 2) ?></span>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -463,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </td>
                                 <td class="text-muted"><?= htmlspecialchars($p['fee_name']) ?></td>
                                 <td style="text-transform:capitalize;"><?= htmlspecialchars(str_replace('_',' ',$p['payment_method'])) ?></td>
-                                <td class="text-right" style="color:#059669;font-weight:600;">$<?= number_format($p['amount'], 2) ?></td>
+                                <td class="text-right" style="color:var(--success);font-weight:600;">$<?= number_format($p['amount'], 2) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -488,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <td class="font-medium"><?= htmlspecialchars($e['description']) ?></td>
                                 <td><span class="badge badge-secondary"><?= htmlspecialchars($e['category_name']) ?></span></td>
                                 <td class="text-muted"><?= date('M d', strtotime($e['expense_date'])) ?></td>
-                                <td class="text-right" style="color:#ef4444;font-weight:600;">$<?= number_format($e['amount'], 2) ?></td>
+                                <td class="text-right" style="color:var(--danger);font-weight:600;">$<?= number_format($e['amount'], 2) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -508,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <?php foreach ($expenseByCategory as $cat): ?>
                             <tr>
                                 <td class="font-medium"><?= htmlspecialchars($cat['name']) ?></td>
-                                <td class="text-right" style="color:#ef4444;font-weight:600;">$<?= number_format($cat['total'], 2) ?></td>
+                                <td class="text-right" style="color:var(--danger);font-weight:600;">$<?= number_format($cat['total'], 2) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

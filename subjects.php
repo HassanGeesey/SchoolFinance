@@ -61,7 +61,7 @@ require_once 'header.php';
     <div style="flex:1 1 300px; max-width:100%;">
         <div class="card">
             <div class="card-header">
-                <h3><i class="fas fa-book mr-2" style="color:#059669;"></i>Add Subject</h3>
+                <h3><i class="fas fa-book mr-2" style="color:var(--primary);"></i>Add Subject</h3>
             </div>
             <div class="card-body">
                 <form method="POST">

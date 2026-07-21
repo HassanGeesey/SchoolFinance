@@ -1,202 +1,90 @@
-# English Institute Management System (IMS)
+# IMS - Institute Management System
 
-A comprehensive web-based management system for English language institutes. Built with PHP, MySQL, and Tailwind CSS.
+A comprehensive, web-based management system for educational institutes. Built with PHP, MySQL, and a custom design system with dark mode support.
 
 ![IMS Screenshot](IMS.jpg)
 
 ## Features
 
-### User Management
-- **Admin Login** - Secure authentication with session management
-- **Dashboard** - Overview with stats, class schedule, and quick actions
-
 ### Academic Management
-- **Teachers** - Add, edit, delete teachers. Teachers are assigned to subjects.
-- **Subjects** - Manage subjects (Grammar, Speaking, Writing, Reading, etc.)
-- **Courses** - Create courses and link multiple subjects to them
-- **Classes** - Create scheduled classes with room, time slot, and course assignments
-- **Attendance** - Mark and track student attendance (Present, Absent, Late, Excused)
 
-### Examination System
-- **Schedule Exams** - Create exams with customizable marks and passing criteria
-- **Enter Marks** - Manual entry or CSV import for exam results
-- **Results** - Automatic grading (A+, A, B+, B, C, D, F)
-- **CSV Template** - Download pre-filled templates for bulk import
+- **Classes** - Create, edit, and schedule classes with subjects, teachers, time slots, and days
+- **Subjects** - Manage curriculum subjects (Mathematics, English, Science, etc.)
+- **Teachers** - Add and manage teacher profiles with qualifications and specializations
+- **Teacher Subjects** - Assign teachers to subjects they teach
+- **Scheduling** - View per-class schedules and a master schedule across all classes
 
 ### Student Management
-- **Enroll Students** - Add students and assign to classes
-- **Transfer Students** - Move students between classes
-- **Drop Out** - Mark students as dropped (with restore option)
-- **Delete** - Permanently remove students
+
+- **Enrollment** - Register students and assign them to active classes
+- **Transfers** - Move students between classes with reassignment tracking
+- **Lifecycle** - Mark students as graduated, suspended, or dropped (with restore option)
 
 ### Finance
-- **Fee Structure** - Define fees per course (monthly, quarterly, yearly, one-time)
-- **Payments** - Record payments with multiple methods (cash, card, bank transfer)
-- **Receipts** - Generate and print payment receipts
 
-### Reports
-- Analytics dashboard with statistics
+- **Fee Structures** - Define fee types (monthly, quarterly, yearly, one-time) with amounts and penalties
+- **Fee Payments** - Record payments with multiple methods (cash, card, bank transfer, online)
+- **Receipts** - Generate and print payment receipts
+- **Expense Tracking** - Log expenses by category (rent, utilities, supplies, etc.)
+- **Salary Payments** - Record and track teacher salary disbursements
+- **Finance Report** - Revenue vs. expenses overview with filtering
+
+### Dashboard & Reporting
+
+- **Overview** - Stats cards for active classes, students, teachers, revenue, expenses, and net profit
+- **Revenue vs Expenses** - 6-month bar chart visualization
+- **Recent Activity** - Latest payments and expenses at a glance
+- **Reports** - Institution-wide analytics
+
+### System Features
+
+- **Dark Mode** - Toggle between light and dark themes (persisted via localStorage)
+- **Global Search** - `Ctrl+K` / `Cmd+K` shortcut to search across students, teachers, classes, and payments
+- **Quick Add** - Dropdown menu for creating common records from any page
+- **Responsive Design** - Mobile-friendly sidebar with overlay
+- **Configurable** - Institute name, logo, and contact info via Settings
 
 ## Tech Stack
 
-- **Backend:** PHP 7.4+
-- **Database:** MySQL (XAMPP)
-- **Frontend:** HTML5, Tailwind CSS, Font Awesome
-- **Architecture:** Single-page PHP application with PDO
+| Layer | Technology |
+|-------|-----------|
+| Backend | PHP 7.4+ |
+| Database | MySQL 5.7+ (PDO) |
+| Frontend | HTML5, Custom CSS Design System |
+| Icons | Font Awesome 6.4 |
+| Fonts | Google Fonts (Poppins) |
+| Server | Apache (XAMPP) |
+
+## Prerequisites
+
+- [XAMPP](https://www.apachefriends.org/) (or any Apache + MySQL stack)
+- PHP 7.4 or higher
+- MySQL 5.7 or higher
 
 ## Installation
 
-### Prerequisites
-- XAMPP (or any PHP + MySQL stack)
-- PHP 7.4 or higher
-- MySQL 5.7+
+**1. Clone the repository**
 
-### Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   ```
-
-2. **Move to htdocs**
-   ```bash
-   # For XAMPP on Windows
-   copy the v2 folder to C:\xampp\htdocs\IMS
-   ```
-
-3. **Create the database**
-   ```bash
-   cd C:\xampp\htdocs\IMS\v2
-   "C:\xampp\mysql\bin\mysql.exe" -u root < database.sql
-   ```
-
-4. **Start Apache and MySQL** in XAMPP Control Panel
-
-5. **Access the application**
-   ```
-   http://localhost/IMS/v2/
-   ```
-
-### Login Credentials
-- **Username:** admin
-- **Password:** admin123
-
-## Database Schema
-
-```
-┌─────────────────┐
-│     levels      │  Basic → Beginner → Elementary → ...
-├─────────────────┤
-│     rooms       │  Room A, Room B, Lab 1, ...
-├─────────────────┤
-│   time_slots    │  08:00-09:00, 09:00-10:00, ...
-├─────────────────┤
-│     teachers    │  Name, email, qualification, ...
-├─────────────────┤
-│    subjects     │  Grammar, Speaking, Writing, ...
-├─────────────────┤
-│  teacher_subjects │  (links teachers to subjects)
-├─────────────────┤
-│     courses     │  IELTS Prep, Business English, ...
-├─────────────────┤
-│  course_subjects │  (links courses to subjects)
-├─────────────────┤
-│     classes    │  Room + Time Slot + Level + Courses
-├─────────────────┤
-│   class_courses │  (links classes to courses)
-├─────────────────┤
-│    students    │  Name, class, enrollment date, status
-├─────────────────┤
-│   attendance   │  Student attendance records
-├─────────────────┤
-│     exams      │  Scheduled exams
-├─────────────────┤
-│  exam_results  │  Student marks and grades
-├─────────────────┤
-│  fee_structures│  Fee definitions per course
-├─────────────────┤
-│  fee_payments  │  Payment records
-└─────────────────┘
+```bash
+git clone <repository-url>
 ```
 
-## Project Structure
+**2. Move to web server root**
 
-```
-IMS/v2/
-├── config.php          # Database connection & session
-├── login.php           # Admin login
-├── logout.php          # Session destroy
-├── header.php          # Navigation sidebar
-├── footer.php          # Footer scripts
-│
-├── index.php           # Dashboard
-│
-├── teachers.php        # Teacher management
-├── teacher_create.php
-├── teacher_edit.php
-│
-├── subjects.php        # Subject management
-├── subject_create.php
-├── subject_edit.php
-│
-├── courses.php         # Course management
-├── course_create.php
-├── course_edit.php
-│
-├── classes.php         # Class management
-├── class_create.php
-├── class_edit.php
-├── class_view.php
-├── class_delete.php
-│
-├── students.php        # Student management
-│
-├── attendance.php      # Attendance marking
-├── get_students.php    # AJAX endpoint
-│
-├── exams.php           # Exam management
-├── enter_marks.php    # Manual marks entry
-├── import_marks.php    # CSV import
-├── download_template.php # CSV template download
-├── exam_results.php    # View results
-│
-├── fee_structures.php  # Fee management
-├── fee_payments.php    # Record payments
-├── receipt.php         # Print receipt
-│
-├── timeslots.php       # Time slot management
-│
-├── reports.php         # Analytics
-│
-├── database.sql        # Database schema
-└── USE.md              # User guide
+```bash
+# XAMPP on Windows
+xcopy /E /I <clone-path>\SchoolFinance C:\xampp\htdocs\SchoolFinance
 ```
 
-## How It Works
+**3. Create the database**
 
-### Teacher Assignment
-Teachers are assigned to **Subjects**, not directly to classes. When a class includes courses that have certain subjects, the teachers for those subjects automatically teach the class.
+```bash
+"C:\xampp\mysql\bin\mysql.exe" -u root < C:\xampp\htdocs\SchoolFinance\database.sql
+```
 
-### Class Creation
-1. Select a room and time slot
-2. Choose a level (Basic, Beginner, Elementary, etc.)
-3. Select one or more courses
-4. Teachers are automatically assigned based on course subjects
+**4. Configure database credentials**
 
-### Student Enrollment
-1. Add student with name
-2. Assign to an active class
-3. Student can be transferred, dropped out, or deleted
-
-### Exam Flow
-1. Schedule an exam for a class
-2. Enter marks manually OR download CSV template
-3. Fill in marks and import
-4. View results with automatic grading
-
-## Configuration
-
-Edit `config.php` to change database credentials:
+Edit `config.php` if your MySQL setup differs from the defaults:
 
 ```php
 define('DB_HOST', 'localhost');
@@ -205,35 +93,122 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 ```
 
-## Screenshots
+**5. Start services**
 
-### Dashboard
-- Overview cards showing active classes, students, teachers, revenue
-- Class schedule grid showing rooms and time slots
-- Quick action buttons
+Open XAMPP Control Panel and start **Apache** and **MySQL**.
 
-### Exam Import
-- Download pre-filled CSV template
-- Upload completed CSV file
-- View student list for reference
+**6. Access the application**
 
-### Student Management
-- Enroll new students
-- Transfer between classes
-- Mark as dropped out (with restore option)
-- Delete permanently
+```
+http://localhost/SchoolFinance/
+```
+
+### Default Credentials
+
+| Field | Value |
+|-------|-------|
+| Username | `admin` |
+| Password | `admin123` |
+
+> Change the default password after first login via the Users page.
+
+## Database Schema
+
+```
+users                  Admin accounts and authentication
+teachers               Teacher profiles (name, qualifications, salary)
+subjects               Curriculum subjects
+teacher_subjects       Teacher-to-subject assignments (M:N)
+classes                Class groups (name, dates, capacity)
+class_subjects         Class timetable entries (subject + teacher + day + time slot)
+students               Student records with guardian info
+student_enrollments    Student-to-class enrollment tracking
+student_reassignments  Transfer history between classes
+fee_structures         Fee definitions (type, amount, penalties)
+fee_payments           Payment records with method tracking
+student_fees           Per-student fee ledger
+expense_categories     Expense classification
+expenses               Expense records
+salary_payments        Teacher salary disbursement log
+time_slots             Available time slots (08:00-21:00)
+days                   Days of the week
+settings               Institute configuration key-value store
+```
+
+## Project Structure
+
+```
+SchoolFinance/
+├── config.php              Database connection, auth helpers, settings
+├── database.sql            Full schema with seed data
+├── index.php               Dashboard
+├── login.php               Admin login page
+├── logout.php              Session destruction
+├── header.php              Sidebar navigation & page header
+├── footer.php              Scripts (theme, search, mobile menu)
+├── search.php              AJAX global search endpoint
+│
+├── css/
+│   └── design-system.css   Custom CSS variables, components, dark mode
+│
+├── teachers.php            Teacher list & management
+├── teacher_create.php      Add new teacher
+├── teacher_edit.php        Edit teacher details
+├── teacher_subjects.php    Assign teachers to subjects
+├── students.php            Student list & enrollment
+│
+├── classes.php             Class list
+├── class_create.php        Create new class
+├── class_edit.php          Edit class details
+├── class_view.php          Class detail view
+├── class_delete.php        Delete class with cascade
+├── class_schedule.php      Per-class schedule view
+├── master_schedule.php     Institution-wide timetable
+├── subjects.php            Subject management
+│
+├── fee_structures.php      Fee type definitions
+├── fee_payments.php        Record fee payments
+├── receipt.php             Print payment receipts
+├── expense_categories.php  Expense category management
+├── expenses.php            Expense recording
+├── salary_payments.php     Teacher salary payments
+├── finance_report.php      Financial reports & filtering
+│
+├── timeslots.php           Time slot management
+├── settings.php            Institute settings (name, logo)
+├── users.php               Admin user management
+├── reports.php             Analytics & reports
+│
+├── uploads/                File uploads (logos, etc.)
+└── vendor/                 Composer dependencies (if any)
+```
+
+## Configuration
+
+### Institute Branding
+
+Navigate to **Settings** after login to configure:
+
+- Institute name (displayed in sidebar and login page)
+- Logo (uploaded to `uploads/`)
+- Contact email, phone, and address
+
+### Database
+
+All database configuration lives in `config.php`. The application uses PDO with:
+
+- `ERRMODE_EXCEPTION` for error handling
+- `FETCH_ASSOC` as default fetch mode
+- Native prepared statements (emulation disabled)
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m "Add amazing feature"`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-This project is open source and available under the MIT License.
-
-## Support
-
-For issues or questions, please create an issue on GitHub.
+This project is open source and available under the [MIT License](LICENSE).

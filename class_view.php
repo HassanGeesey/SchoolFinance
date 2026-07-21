@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'config.php';
 requireLogin();
 $db = getDB();
@@ -30,7 +30,7 @@ $schedule_entries = $schedule_stmt->fetchAll();
 $days = ['Mon'=>'Mon','Tue'=>'Tue','Wed'=>'Wed','Thu'=>'Thu','Fri'=>'Fri','Sat'=>'Sat','Sun'=>'Sun'];
 $timeSlots = $db->query("SELECT * FROM time_slots ORDER BY start_time")->fetchAll();
 
-$subject_colors = ['#3b82f6','#059669','#7c3aed','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1'];
+$subject_colors = ['#2a395a','#b85c3a','#3d7a52','#b89040','#b84c4c','#5a7a8a','#8a6a7a','#6a8a5a','#9a7040','#5a6a8a'];
 $all_subjects = $db->query("SELECT id, name FROM subjects ORDER BY name")->fetchAll();
 $color_map = [];
 foreach ($all_subjects as $i=>$s) {
@@ -40,16 +40,6 @@ foreach ($all_subjects as $i=>$s) {
 $schedule = [];
 foreach ($schedule_entries as $row) {
     $schedule[$row['day_of_week']][$row['time_slot_id']] = $row;
-}
-
-// Subject summary
-$subject_summary = [];
-foreach ($schedule_entries as $row) {
-    $key = $row['subject_id'];
-    if (!isset($subject_summary[$key])) {
-        $subject_summary[$key] = ['name'=>$row['subject_name'],'teacher'=>$row['teacher_name'],'count'=>0,'color'=>$color_map[$row['subject_id']] ?? '#6b7280'];
-    }
-    $subject_summary[$key]['count']++;
 }
 
 require_once 'header.php';
@@ -82,7 +72,7 @@ require_once 'header.php';
     <div class="card" style="flex:1;min-width:160px;">
         <div class="card-body text-center">
             <p class="text-muted text-sm mb-1">Subjects</p>
-            <p class="font-semibold" style="font-size:2rem;"><?= count($subject_summary) ?></p>
+            <p class="font-semibold" style="font-size:2rem;"><?= count(array_unique(array_column($schedule_entries, 'subject_id'))) ?></p>
         </div>
     </div>
     <div class="card" style="flex:1;min-width:160px;">
@@ -126,7 +116,7 @@ require_once 'header.php';
                                 ?>
                                     <div style="background:<?= $color ?>;color:white;border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:0.78rem;line-height:1.3;">
                                         <div class="font-semibold"><?= htmlspecialchars($e['subject_name']) ?></div>
-                                        <div style="opacity:0.85;font-size:0.7rem;"><?= htmlspecialchars($e['teacher_name']) ?></div>
+                                        <div style="opacity:0.75;font-size:0.65rem;"><?= htmlspecialchars($e['teacher_name']) ?></div>
                                     </div>
                                 <?php endif; ?>
                             </td>
@@ -140,35 +130,6 @@ require_once 'header.php';
 <?php endif; ?>
 
 <div class="d-flex flex-wrap" style="gap:1.5rem;">
-    <div style="flex:1 1 300px; max-width:100%;">
-        <?php if (!empty($subject_summary)): ?>
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3><i class="fas fa-book mr-2" style="color:var(--primary);"></i>Subjects (<?= count($subject_summary) ?>)</h3>
-            </div>
-            <div class="table-wrapper">
-                <table class="table">
-                    <thead><tr><th>Subject</th><th>Teacher</th><th>Slots/Week</th></tr></thead>
-                    <tbody>
-                        <?php foreach ($subject_summary as $ss): ?>
-                            <tr>
-                                <td>
-                                    <div style="display:flex;align-items:center;gap:0.5rem;">
-                                        <div style="width:12px;height:12px;border-radius:3px;background:<?= $ss['color'] ?>;"></div>
-                                        <span class="font-semibold"><?= htmlspecialchars($ss['name']) ?></span>
-                                    </div>
-                                </td>
-                                <td class="text-muted"><?= htmlspecialchars($ss['teacher']) ?></td>
-                                <td><span class="font-semibold"><?= $ss['count'] ?></span></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <?php endif; ?>
-    </div>
-
     <div style="flex:1 1 300px; max-width:100%;">
         <div class="card">
             <div class="card-header">

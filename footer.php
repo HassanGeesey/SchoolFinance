@@ -52,6 +52,14 @@
         });
     }
 
+    // Sidebar section collapse toggle
+    document.querySelectorAll('.nav-section-title[data-toggle="collapse"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const section = btn.closest('.nav-section');
+        if (section) section.classList.toggle('collapsed');
+      });
+    });
+
     // Quick Add Dropdown
     const quickAddBtn = document.getElementById('quickAddBtn');
     const quickAddMenu = document.getElementById('quickAddMenu');

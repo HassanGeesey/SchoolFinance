@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'config.php';
 requireLogin();
 $currentPage = basename($_SERVER['PHP_SELF']);
@@ -43,72 +43,93 @@ $current_user = $_SESSION['username'] ?? 'User';
                         <i class="fas fa-chart-pie"></i><span>Dashboard</span>
                     </a>
                 </div>
-                <div class="nav-section">
-                    <div class="nav-section-title">User Management</div>
-                    <a href="teachers.php" class="nav-link <?= in_array($currentPage, ['teachers.php','teacher_create.php','teacher_edit.php']) ? 'active' : '' ?>">
-                        <i class="fas fa-user-tie"></i><span>Teachers</span>
-                    </a>
-                    <a href="students.php" class="nav-link <?= $currentPage=='students.php' ? 'active' : '' ?>">
-                        <i class="fas fa-user-graduate"></i><span>Students</span>
-                    </a>
+                <div class="nav-section<?= in_array($currentPage, ['teachers.php','teacher_create.php','teacher_edit.php','students.php']) ? '' : ' collapsed' ?>">
+                    <button class="nav-section-title" data-toggle="collapse">
+                        <span>User Management</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="teachers.php" class="nav-link <?= in_array($currentPage, ['teachers.php','teacher_create.php','teacher_edit.php']) ? 'active' : '' ?>">
+                            <i class="fas fa-user-tie"></i><span>Teachers</span>
+                        </a>
+                        <a href="students.php" class="nav-link <?= $currentPage=='students.php' ? 'active' : '' ?>">
+                            <i class="fas fa-user-graduate"></i><span>Students</span>
+                        </a>
+                    </div>
                 </div>
-                <div class="nav-section">
-                    <div class="nav-section-title">Academic</div>
-                    <a href="classes.php" class="nav-link <?= in_array($currentPage, ['classes.php','class_create.php','class_edit.php','class_view.php']) ? 'active' : '' ?>">
-                        <i class="fas fa-chalkboard"></i><span>Classes</span>
-                    </a>
-                    <a href="subjects.php" class="nav-link <?= $currentPage=='subjects.php' ? 'active' : '' ?>">
-                        <i class="fas fa-book"></i><span>Subjects</span>
-                    </a>
-                    <a href="teacher_subjects.php" class="nav-link <?= $currentPage=='teacher_subjects.php' ? 'active' : '' ?>">
-                        <i class="fas fa-user-graduate"></i><span>Teacher Subjects</span>
-                    </a>
-                    <a href="class_schedule.php" class="nav-link <?= $currentPage=='class_schedule.php' ? 'active' : '' ?>">
-                        <i class="fas fa-calendar-alt"></i><span>Schedule</span>
-                    </a>
+                <div class="nav-section<?= in_array($currentPage, ['classes.php','class_create.php','class_edit.php','class_view.php','subjects.php','teacher_subjects.php','class_schedule.php','master_schedule.php']) ? '' : ' collapsed' ?>">
+                    <button class="nav-section-title" data-toggle="collapse">
+                        <span>Academic</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="classes.php" class="nav-link <?= in_array($currentPage, ['classes.php','class_create.php','class_edit.php','class_view.php']) ? 'active' : '' ?>">
+                            <i class="fas fa-chalkboard"></i><span>Classes</span>
+                        </a>
+                        <a href="subjects.php" class="nav-link <?= $currentPage=='subjects.php' ? 'active' : '' ?>">
+                            <i class="fas fa-book"></i><span>Subjects</span>
+                        </a>
+                        <a href="teacher_subjects.php" class="nav-link <?= $currentPage=='teacher_subjects.php' ? 'active' : '' ?>">
+                            <i class="fas fa-user-graduate"></i><span>Teacher Subjects</span>
+                        </a>
+                        <a href="class_schedule.php" class="nav-link <?= $currentPage=='class_schedule.php' ? 'active' : '' ?>">
+                            <i class="fas fa-calendar-alt"></i><span>Schedule</span>
+                        </a>
+                        <a href="master_schedule.php" class="nav-link <?= $currentPage=='master_schedule.php' ? 'active' : '' ?>">
+                            <i class="fas fa-table"></i><span>Master Schedule</span>
+                        </a>
+                    </div>
                 </div>
-                <div class="nav-section">
-                    <div class="nav-section-title">Finance</div>
-                    <a href="fee_structures.php" class="nav-link <?= $currentPage=='fee_structures.php' ? 'active' : '' ?>">
-                        <i class="fas fa-hand-holding-usd"></i><span>Fee Structure</span>
-                    </a>
-                    <a href="fee_payments.php" class="nav-link <?= in_array($currentPage, ['fee_payments.php','receipt.php']) ? 'active' : '' ?>">
-                        <i class="fas fa-money-bill"></i><span>Payments</span>
-                    </a>
+                <div class="nav-section<?= in_array($currentPage, ['fee_structures.php','fee_payments.php','receipt.php','expense_categories.php','expenses.php','salary_payments.php','finance_report.php']) ? '' : ' collapsed' ?>">
+                    <button class="nav-section-title" data-toggle="collapse">
+                        <span>Finance</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="fee_structures.php" class="nav-link <?= $currentPage=='fee_structures.php' ? 'active' : '' ?>">
+                            <i class="fas fa-hand-holding-usd"></i><span>Fee Structure</span>
+                        </a>
+                        <a href="fee_payments.php" class="nav-link <?= in_array($currentPage, ['fee_payments.php','receipt.php']) ? 'active' : '' ?>">
+                            <i class="fas fa-money-bill"></i><span>Payments</span>
+                        </a>
+                        <div class="nav-section-divider"></div>
+                        <a href="expense_categories.php" class="nav-link <?= $currentPage=='expense_categories.php' ? 'active' : '' ?>">
+                            <i class="fas fa-tags"></i><span>Categories</span>
+                        </a>
+                        <a href="expenses.php" class="nav-link <?= $currentPage=='expenses.php' ? 'active' : '' ?>">
+                            <i class="fas fa-receipt"></i><span>Expenses</span>
+                        </a>
+                        <a href="salary_payments.php" class="nav-link <?= $currentPage=='salary_payments.php' ? 'active' : '' ?>">
+                            <i class="fas fa-money-check-alt"></i><span>Salary Payments</span>
+                        </a>
+                        <a href="finance_report.php" class="nav-link <?= $currentPage=='finance_report.php' ? 'active' : '' ?>">
+                            <i class="fas fa-chart-bar"></i><span>Finance Report</span>
+                        </a>
+                    </div>
                 </div>
-                <div class="nav-section">
-                    <div class="nav-section-title">Expenses</div>
-                    <a href="expense_categories.php" class="nav-link <?= $currentPage=='expense_categories.php' ? 'active' : '' ?>">
-                        <i class="fas fa-tags"></i><span>Categories</span>
-                    </a>
-                    <a href="expenses.php" class="nav-link <?= $currentPage=='expenses.php' ? 'active' : '' ?>">
-                        <i class="fas fa-receipt"></i><span>Expenses</span>
-                    </a>
-                    <a href="salary_payments.php" class="nav-link <?= $currentPage=='salary_payments.php' ? 'active' : '' ?>">
-                        <i class="fas fa-money-check-alt"></i><span>Salary Payments</span>
-                    </a>
-                    <a href="finance_report.php" class="nav-link <?= $currentPage=='finance_report.php' ? 'active' : '' ?>">
-                        <i class="fas fa-chart-bar"></i><span>Finance Report</span>
-                    </a>
-                </div>
-                <div class="nav-section">
-                    <div class="nav-section-title">Settings</div>
-                    <a href="settings.php" class="nav-link <?= $currentPage=='settings.php' ? 'active' : '' ?>">
-                        <i class="fas fa-cog"></i><span>Institute Settings</span>
-                    </a>
-                    <a href="users.php" class="nav-link <?= $currentPage=='users.php' ? 'active' : '' ?>">
-                        <i class="fas fa-users"></i><span>Users</span>
-                    </a>
-                    <a href="timeslots.php" class="nav-link <?= $currentPage=='timeslots.php' ? 'active' : '' ?>">
-                        <i class="fas fa-clock"></i><span>Time Slots</span>
-                    </a>
-                    <a href="reports.php" class="nav-link <?= $currentPage=='reports.php' ? 'active' : '' ?>">
-                        <i class="fas fa-chart-bar"></i><span>Reports</span>
-                    </a>
+                <div class="nav-section<?= in_array($currentPage, ['settings.php','users.php','timeslots.php','reports.php']) ? '' : ' collapsed' ?>">
+                    <button class="nav-section-title" data-toggle="collapse">
+                        <span>Settings</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="settings.php" class="nav-link <?= $currentPage=='settings.php' ? 'active' : '' ?>">
+                            <i class="fas fa-cog"></i><span>Institute Settings</span>
+                        </a>
+                        <a href="users.php" class="nav-link <?= $currentPage=='users.php' ? 'active' : '' ?>">
+                            <i class="fas fa-users"></i><span>Users</span>
+                        </a>
+                        <a href="timeslots.php" class="nav-link <?= $currentPage=='timeslots.php' ? 'active' : '' ?>">
+                            <i class="fas fa-clock"></i><span>Time Slots</span>
+                        </a>
+                        <a href="reports.php" class="nav-link <?= $currentPage=='reports.php' ? 'active' : '' ?>">
+                            <i class="fas fa-chart-bar"></i><span>Reports</span>
+                        </a>
+                    </div>
                 </div>
             </nav>
             <div class="sidebar-footer">
-                <a href="logout.php" class="nav-link" style="color: #dc2626;">
+                <a href="logout.php" class="nav-link" style="color: var(--danger);">
                     <i class="fas fa-sign-out-alt"></i><span>Logout</span>
                 </a>
             </div>
@@ -132,7 +153,8 @@ $current_user = $_SESSION['username'] ?? 'User';
                                 'finance_report.php'=>'Finance Report',
                                 'reports.php'=>'Reports','settings.php'=>'Settings','users.php'=>'Users',
                                 'subjects.php'=>'Subjects','teacher_subjects.php'=>'Teacher Subjects',
-                                'class_schedule.php'=>'Schedule'
+                                'class_schedule.php'=>'Schedule',
+                                'master_schedule.php'=>'Master Schedule'
                             ];
                             echo $titles[$currentPage] ?? 'Dashboard';
                         ?></span>

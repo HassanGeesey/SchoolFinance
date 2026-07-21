@@ -69,7 +69,7 @@ require_once 'header.php';
 
         <div class="card mt-4">
             <div class="card-header">
-                <h3><i class="fas fa-list mr-2" style="color:#059669;"></i>All Teachers</h3>
+                <h3><i class="fas fa-list mr-2" style="color:var(--primary);"></i>All Teachers</h3>
             </div>
             <div class="table-wrapper">
                 <table class="table">
